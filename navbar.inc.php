@@ -1,6 +1,6 @@
 <?php
     $pages = array(
-        "dashboard" => "System Property Dashboard",
+        "stats"     => "Property Stats",
         "svnlog"    => "SCDB Activity",
         "deploys"   => "Deploys Today",
         "aqlog"     => "Aquilon Activity",
