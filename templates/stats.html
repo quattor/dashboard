@@ -1,0 +1,23 @@
+{% extends "templates/layout.html" %}
+
+{% block css %}
+<link rel="stylesheet" href="/assets/css/bootstrap-select.min.css" type="text/css" />
+<link rel="stylesheet" href="/assets/css/jquery.jqplot.min.css" type="text/css" />
+{% endblock %}
+
+{% block javascript %}
+<script src="/assets/js/jquery.tablesorter.min.js"></script>
+<script src="/assets/js/bootstrap-select.min.js"></script>
+<script src="/assets/js/excanvas.min.js"></script>
+<script src="/assets/js/jquery.jqplot.min.js"></script>
+<script src="/assets/js/jqplot.pieRenderer.min.js"></script>
+<script src="/assets/js/pages/stats/stats.js"></script>
+{% endblock %}a
+
+{% block content %}
+<div id="pagemanage">
+    <h1>Statistics</h1>
+
+    <div id="stats"></div>
+</div>
+{% endblock %}

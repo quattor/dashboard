@@ -1,0 +1,108 @@
+/*
+*   HEADER
+*/
+
+#navigation
+{
+  height: 64px;
+  background-color: #eeeeee;
+  width: 100%;
+  //box-shadow: 0 0 2px rgba(0, 0, 0, 0.65);
+  z-index: 2000;
+
+  // Fix for IE7's bad z-indexing so dropdowns don't appear below content that follows the navbar
+  *position: relative;
+  *z-index: 2000;
+
+  .container
+  {
+    padding-top: 8px;
+  }
+
+  .brand
+  {
+    margin: 5px 20px 5px 5px;
+    text-align: center;
+    font-family: helvetica, arial, serif;
+    font-size: 18px;
+    font-weight: 500;
+    letter-spacing: 0;
+    color: #000000;
+    line-height: 18px;
+
+    img
+    {
+      height: 20px;
+    }
+  }
+
+  a
+  {
+    //font-family: 'Open Sans', sans-serif;
+    font-size: 13px;
+    font-weight: bold;
+    //text-transform: uppercase;
+    line-height: 18px;
+    letter-spacing: 1px;
+    margin: 0;
+    text-decoration: none;
+    //text-shadow: 0 1px 0 #ffffff;
+  }
+
+  .main-menu
+  {
+    padding: 0;
+    text-align: center;
+    line-height: 18px;
+    font-size: 12px;
+    margin-top: 5px;
+
+    > li > a
+    {
+      font-size: 15px;
+      padding-top: 10px;
+      padding-bottom: 10px;
+      line-height: @line-height-computed;
+      color: #428bca;
+    }
+    a:hover
+    {
+      color: #62abea;
+    }
+  }
+
+  .mobile-menu
+  {
+    position: relative;
+    float: right;
+    padding: 7px 10px;
+    margin-left: 5px;
+    margin-top: 3px;
+    cursor: pointer;
+
+    .icon-bar
+    {
+      background-color: @gray-darker;
+      border-radius: 1px;
+      .box-shadow(0 1px 0 rgba(0, 0, 0, 0.25));
+      display: block;
+      height: 3px;
+      width: 26px;
+      margin-bottom: 3px;
+      margin-top: 1px;
+
+    }
+    &:hover
+    {
+      .icon-bar
+      {
+        background-color: @gray-darker;
+      }
+    }
+
+    @media (min-width: @grid-float-breakpoint)
+    {
+      display: none;
+    }
+  }
+}

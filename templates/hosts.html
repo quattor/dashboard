@@ -1,0 +1,104 @@
+{% extends "templates/layout.html" %}
+
+{% block css %}
+<link rel="stylesheet" href="/assets/css/bootstrap-select.min.css" type="text/css" />
+{% endblock %}
+
+{% block javascript %}
+<script src="/assets/js/jquery.tablesorter.min.js"></script>
+<script src="/assets/js/bootstrap-select.min.js"></script>
+<script src="/assets/js/pages/hosts/hosts.js"></script>
+<script src="/assets/js/pages/hosts/dialogue.js"></script>
+{% endblock %}
+
+{% block content %}
+<div id="pagemanage">
+    <h1>Host Manager</h1>
+
+    <div class="bs-callout bs-callout-info">
+        Before you can make changes to a host, you must first take it under your control and assign it to a sandbox (manage it). From here you can change the personality of the host and the host description. Once you are done you should unmanage it.
+    </div>
+
+    <h2>My Hosts</h2>
+    <br />
+    <table id="myhosts" class="table table-striped table-hover tablesorter">
+        <thead>
+        <tr>
+            <th style="width:30%">Host<span></span></th>
+            <th style="width:30%">Personality<span></span></th>
+            <th style="width:20%">Branch<span></span></th>
+            <th style="width:10%"></th>
+            <th style="width:10%"></th>
+        </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <br />
+
+    <h2>All Hosts</h2>
+
+    <div style="float:right;margin-top:-40px">
+        <input type="checkbox" checked="checked" onclick="alert('Not implemented')" /> Show non-prod branches
+    </div>
+    <br />
+    <table id="hostlist" class="table table-striped table-hover tablesorter">
+        <thead>
+        <tr>
+            <th style="width:30%">Host<span></span></th>
+            <th style="width:30%">Personality<span></span></th>
+            <th style="width:15%">Branch<span></span></th>
+            <th style="width:15%">Branch Author<span></span></th>
+            <th style="width:10%"></th>
+        </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+
+
+<div class="modal" id="managedialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <button id="modal-icon" class="btn btn-xs btn-warning">
+                    <span class="glyphicon glyphicon-pencil"></span>
+                </button>
+                <h4 id="modal-title"></h4>
+            </div>
+            <form id="manageform" class="form-horizontal" role="form" action="/">
+                <br />
+                <fieldset>
+                    <div class="form-group">
+                        <label for="personality" class="col-sm-3 control-label">Personality</label>
+
+                        <div class="col-sm-8">
+                            <select id="personality" name="personality" class="selectpicker show-tick" data-width="100%"></select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="features" class="col-sm-3 control-label">Features</label>
+
+                        <div id="features" class="col-sm-8"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description" class="col-sm-3 control-label">Description</label>
+
+                        <div id="description" class="col-sm-8">
+                            <textarea class="form-control">There is no description associated with this host. Why don't you add one...</textarea>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <br /><br /><br /><br />
+
+                <div class="modal-footer">
+                    <input type="submit" class="btn btn-primary" value="Submit" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends "templates/layout.html" %}
+
+{% block css %}
+<link rel="stylesheet" href="/assets/css/dataTables.bootstrap.css" type="text/css" />
+{% endblock %}
+
+{% block javascript %}
+<script src="/assets/js/jquery.dataTables.min.js"></script>
+<script src="/assets/js/dataTables.bootstrap.min.js"></script>
+<script src="/assets/js/pages/overview/overview.js"></script>
+{% endblock %}
+
+{% block content %}
+<div id="overview">
+    <h1>Overview</h1>
+
+    <div style="margin-bottom: 20px;">
+        <button class="btn btn-primary" onclick="$('#options').slideToggle()">Choose shown fields</button>
+    </div>
+    <div class="well" id="options"></div>
+    <table id="hostlist" class="table table-striped">
+        <thead></thead>
+        <tbody></tbody>
+    </table>
+</div>
+{% endblock %}
