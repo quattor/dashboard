@@ -36,7 +36,7 @@ Deployment
     - If you want to hide aquilon related menu : Edit assets/js/pages/config.js and set AQ_URL to ''.
 
 * On the AII server
-    - `yum install perl-Config-Simple`
+    - `yum install perl-Config-Tiny`
     - `cd /var/www/cgi-bin && wget https://raw.githubusercontent.com/IIHE/dashboard/master/cgi-bin/dashboard-aii.cgi`
     - Be sure your dashboard webserver can reach this page via HTTP GET requests
 

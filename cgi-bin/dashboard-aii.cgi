@@ -7,7 +7,7 @@
 use strict;
 use warnings;
 
-use Config::Simple;
+use Config::Tiny;
 use JSON::XS;
 use Switch;
 use CGI;
@@ -23,17 +23,17 @@ my $profiles_path = "profiles";
 my $profiles_dir = $web_root.'/'.$profiles_path;
 
 # Read AII configuration
-my $cfg = new Config::Simple();
-$cfg->read('/etc/aii/aii-shellfe.conf');
+my $cfg = new Config::Tiny();
+$cfg = $cfg->read('/etc/aii/aii-shellfe.conf');
 
 # PXE Linux directory
-my $pxelinux_dir = $cfg->param('nbpdir');
+my $pxelinux_dir = $cfg->{_}->{nbpdir};
 
 # Profile prefix
-my $profile_prefix = $cfg->param('profile_prefix') eq 0 ? '' : $cfg->param('profile_prefix');
+my $profile_prefix = $cfg->{_}->{profile_prefix} eq 0 ? '' : $cfg->{_}->{profile_prefix};
 
 # cdb url
-my $cdb_url = $cfg->param('cdburl');
+my $cdb_url = $cfg->{_}->{cdb_url};
 
 # Number of different boot types
 my %boot_type;
