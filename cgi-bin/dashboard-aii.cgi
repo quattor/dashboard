@@ -52,8 +52,8 @@ my (@profiles);
 Get the hostname or an IP address and return the IP address in
 hex (as required by pxelinux)
 =cut
-sub GetHexAddr {
-
+sub GetHexAddr
+{
   # The 4th field is an array of the IP address of this node
   my @all_address;
   @all_address =(gethostbyname($_[0]))[4];
@@ -74,8 +74,8 @@ sub GetHexAddr {
 =item Initialize():void
 Find profiles and PXE Configuration
 =cut
-sub Initialize {
-
+sub Initialize
+{
   @profiles=();
 
   opendir(DIR,$profiles_dir);
@@ -94,8 +94,8 @@ sub Initialize {
 =item GetHosts():void
 Print hosts list
 =cut
-sub GetHosts {
-
+sub GetHosts
+{
   my (@all, $k, $json);
 
   for $k (@profiles) {
@@ -114,15 +114,14 @@ sub GetHosts {
   $json =  JSON::XS->new->pretty->encode({hosts => \@all, available_cfg => \@cfg});
 
   print "Content-type: application/json\n\n$json";
-
 }
 
 =pod
 =item GetProfile():void
 Print JSON profile of requested host
 =cut
-sub GetProfile {
-
+sub GetProfile
+{
   if ($_[0] =~ /^(.*)$/) {
     $_[0] = $1;
     my $hostname = $_[0];
@@ -149,8 +148,8 @@ sub GetProfile {
 =item Configure():void
 Call aii-shellfe actions
 =cut
-sub Configure {
-
+sub Configure
+{
   $ENV{PATH}="/bin:/usr/bin:/sbin:/usr/bin:/usr/sbin";
 
   my $result = '';
@@ -183,8 +182,8 @@ sub Configure {
 =item GetStats():void
 Print hosts statistics.
 =cut
-sub GetStats {
-
+sub GetStats
+{
   my (%all, %result, $k, $i, $json, $hostname, $value, @fields, $file, $hexaddr, $dotaddr);
 
   for $k (@profiles) {
@@ -242,15 +241,14 @@ sub GetStats {
   $json = JSON::XS->new->pretty->encode(\%all);
 
   print "Content-type: application/json\n\n$json";
-
 }
 
 =pod
 =item GetOverview():void
 Return hosts overview.
 =cut
-sub GetOverview {
-
+sub GetOverview
+{
   my (%all, %result, $k, $i, $json, $hostname, $value, @fields, $file, $profile);
 
   for $k (@profiles) {
@@ -320,7 +318,6 @@ sub GetOverview {
   $json = JSON::XS->new->pretty->encode(\%all);
 
   print "Content-type: application/json\n\n$json";
-
 }
 
 #########################################################################
