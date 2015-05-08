@@ -12,7 +12,7 @@ my $query = new CGI;
 
 my $limit = $query->param('limit') ? $query->param('limit') : 10;
 
-$limit =~ /(\d+|all)/;
+$limit =~ m/^(\d+|all)$/;
 $limit = $1;
 
 $ENV{PATH}="/bin:/usr/bin:/sbin:/usr/bin:/usr/sbin";
