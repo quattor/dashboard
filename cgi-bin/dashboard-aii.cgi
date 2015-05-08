@@ -72,16 +72,15 @@ Find profiles and PXE Configuration
 =cut
 sub Initialize
 {
-  @profiles=();
+  @profiles = ();
 
-  opendir(DIR,$profiles_dir);
-
+  opendir(DIR,$profiles_dir) || die "failed to opendir $profiles_dir: $!;
   # find all profiles in directory
   push @profiles,map { s/\.json$//; s/^$profile_prefix//; $_ .=''; } sort(grep(/\.json$/, readdir(DIR)));
-
   closedir(DIR);
+
+  opendir(DIR, $pxelinux_dir) || die "failed to opendir $pxelinux_dir: $!;;
   # Load the configurations list
-  opendir(DIR, $pxelinux_dir);
   @cfg = sort(grep(/(\.cfg$)|(default)/, readdir(DIR)));
   closedir(DIR);
 }
