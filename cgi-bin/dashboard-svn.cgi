@@ -4,6 +4,9 @@
 # ${author-info}
 # ${build-info}
 
+use strict;
+use warnings;
+
 use CGI;
 
 my $repository = "file:///var/www/svn/scdb";
