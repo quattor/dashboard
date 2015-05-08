@@ -7,6 +7,8 @@
 use strict;
 use warnings;
 
+use lib '/usr/lib/perl';
+use CAF::Process;
 use Config::Tiny;
 use JSON::XS;
 use Switch;
@@ -95,12 +97,17 @@ sub GetHosts
 
     my $hostname = $k;
 
-    my ($hexaddr,$dotaddr) = GetHexAddr($hostname);
+    my ($hexaddr, $dotaddr) = GetHexAddr($hostname);
 
     my $link = readlink("$pxelinux_dir/$hexaddr");
     my $existing_cfg = $link ? $link : "";
 
-    push @all ,{'hostname' => $hostname, 'hexaddr' => $hexaddr, 'dotaddr' => $dotaddr, 'bootcfg' => $existing_cfg };
+    push @all ,{
+        'hostname' => $hostname,
+        'hexaddr' => $hexaddr,
+        'dotaddr' => $dotaddr,
+        'bootcfg' => $existing_cfg
+    };
 
   }
 
@@ -115,9 +122,9 @@ Print JSON profile of requested host
 =cut
 sub GetProfile
 {
-  if ($_[0] =~ /^(.*)$/) {
-    $_[0] = $1;
-    my $hostname = $_[0];
+  my $hostname = @_;
+  if ($hostname =~ m/^([\w\-\.]+)$/) {
+
     my $file = "$profiles_dir/$profile_prefix$hostname.json";
 
       my $json_text = do {
@@ -143,31 +150,38 @@ Call aii-shellfe actions
 =cut
 sub Configure
 {
-  $ENV{PATH}="/bin:/usr/bin:/sbin:/usr/bin:/usr/sbin";
+    my ($action, $hostname) = @_;
 
-  my $result = '';
-  print "Content-type: text/plain\n\n";
+    $hostname =~ /^([\w\-\.]+)$/;
+    $hostname = $1;
 
-  $_[0] =~ /^(configure|install|reinstall|boot)$/;
-  $_[0] = $1;
+    $action =~ /^(configure|install|reinstall|boot)$/;
+    $action = $1;
 
-  $_[1] =~ /^(.*)$/;
-  $_[1] = $1;
+    $ENV{PATH}="/bin:/usr/bin:/sbin:/usr/bin:/usr/sbin";
 
-  my $action = $_[0];
-  my $hostname = $_[1];
+    my @command = qw(/usr/bin/sudo /usr/sbin/aii-shellfe);
 
-  if ($action eq 'reinstall') {
-    my $ok = system ("/usr/bin/sudo", "/usr/sbin/aii-shellfe", "--remove", $hostname);
-    $ok = system ("/usr/bin/sudo", "/usr/sbin/aii-shellfe", "--configure", $hostname);
-    $ok = system ("/usr/bin/sudo", "/usr/sbin/aii-shellfe", "--install", $hostname);
-    print "Failed to reinstall $hostname using aii-shellfe<br>" if ($ok != 0);
-  }
-  else {
-    if (system ("/usr/bin/sudo", "/usr/sbin/aii-shellfe", "--$action", $hostname) != 0) {
-        print "Failed to $action $hostname using aii-shellfe<br>";
-      }
-  }
+    if ($action eq 'reinstall') {
+        push(@command, '--remove', '--configure', '--install');
+    }
+    else {
+        push(@command, '--'.$action);
+    }
+
+    push(@command, $hostname);
+
+    my $p = new CAF::Process(\@command);
+    my $output = $p->output();
+
+    print "Content-type: text/plain\n\n";
+
+    if ($? eq 0) {
+        print "$output";
+    }
+    else {
+        print "Failed to $action $hostname using aii-shellfe : $?";
+    }
 
 }
 
@@ -182,7 +196,7 @@ sub GetStats
   for $k (@profiles) {
 
     $hostname = $k;
-    $hostname =~ /^(.*)$/;
+    $hostname =~ m/^([\w\-\.]+)$/;
     $hostname = $1;
 
     $file = "$profiles_dir/$profile_prefix$hostname.json";
