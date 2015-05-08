@@ -4,6 +4,9 @@
 # ${author-info}
 # ${build-info}
 
+use strict;
+use warnings;
+
 use Config::Simple;
 use JSON::XS;
 use Switch;
@@ -332,4 +335,3 @@ elsif ($action eq 'getProfile' and $host_valid ne '') { &GetProfile($requested_h
 elsif ($action eq 'configure' and $option ne '' and $host_valid ne '') { &Configure($option, $requested_host); }
 elsif ($action eq 'getStats' and $stats ne '') { &GetStats($stats); }
 elsif ($action eq 'getOverview' and $stats ne '') { &GetOverview($stats); }
-
