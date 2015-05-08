@@ -55,18 +55,14 @@ hex (as required by pxelinux)
 sub GetHexAddr
 {
   # The 4th field is an array of the IP address of this node
-  my @all_address;
-  @all_address =(gethostbyname($_[0]))[4];
-  if ($#all_address < 0) { # The array is empty
-    return ;
-  }
+  my @all_address = (gethostbyname($_[0]))[4];
+  return if ($#all_address < 0);
+
   # We unpack the IP address
   my @tmp_address = unpack('C4',$all_address[0]);
   my @result;
-  $result[0]=sprintf ("%02X%02X%02X%02X",$tmp_address[0], $tmp_address[1],
-                                         $tmp_address[2], $tmp_address[3]);
-  $result[1]=sprintf ("%u.%u.%u.%u",$tmp_address[0], $tmp_address[1],
-                                    $tmp_address[2], $tmp_address[3]);
+  push(@result, sprintf ("%02X%02X%02X%02X",@tmp_address));
+  push(@result, sprintf ("%u.%u.%u.%u",@tmp_address));
   return @result;
 }
 
