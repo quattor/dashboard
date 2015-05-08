@@ -318,17 +318,17 @@ sub GetOverview {
 # Load the directory entries (*.json and *.cfg)
 &Initialize;
 
-my $q = new CGI;
+my $query = new CGI;
 
-my $action = $q->param('action') ? $q->param('action') : '';
+my $action = $query->param('action') ? $query->param('action') : '';
 
-my $requested_host = $q->param('hostname') ? $q->param('hostname') : '';
+my $requested_host = $query->param('hostname') ? $query->param('hostname') : '';
 
 my $host_valid = $requested_host ne '' and grep(/^$requested_host/,@profiles) ? $requested_host : '' ;
 
-my $option = $q->param('option') ? $q->param('option') : '';
+my $option = $query->param('option') ? $query->param('option') : '';
 
-my $stats = $q->param('stats') ? $q->param('stats') : '';
+my $stats = $query->param('stats') ? $query->param('stats') : '';
 
 if ($action eq 'getHosts') { &GetHosts(); }
 elsif ($action eq 'getProfile' and $host_valid ne '') { &GetProfile($requested_host); }
