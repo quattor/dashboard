@@ -47,11 +47,12 @@ my %nodes_cfg;
 # Profiles .json available
 my (@profiles);
 
-################################################################
+=pod
+=item GetHexAddr():void
+Get the hostname or an IP address and return the IP address in
+hex (as required by pxelinux)
+=cut
 sub GetHexAddr {
-################################################################
-# Get the hostname or an IP address and return the IP address in
-# hex (as required by pxelinux)
 
   # The 4th field is an array of the IP address of this node
   my @all_address;
@@ -69,10 +70,11 @@ sub GetHexAddr {
   return @result;
 }
 
-
-#########################################################################
+=pod
+=item Initialize():void
+Find profiles and PXE Configuration
+=cut
 sub Initialize {
-#########################################################################
 
   @profiles=();
 
@@ -88,9 +90,11 @@ sub Initialize {
   closedir(DIR);
 }
 
-#########################################################################
+=pod
+=item GetHosts():void
+Print hosts list
+=cut
 sub GetHosts {
-#########################################################################
 
   my (@all, $k, $json);
 
@@ -113,9 +117,11 @@ sub GetHosts {
 
 }
 
-#########################################################################
+=pod
+=item GetProfile():void
+Print JSON profile of requested host
+=cut
 sub GetProfile {
-#########################################################################
 
   if ($_[0] =~ /^(.*)$/) {
     $_[0] = $1;
@@ -139,9 +145,11 @@ sub GetProfile {
     }
 }
 
-#########################################################################
+=pod
+=item Configure():void
+Call aii-shellfe actions
+=cut
 sub Configure {
-#########################################################################
 
   $ENV{PATH}="/bin:/usr/bin:/sbin:/usr/bin:/usr/sbin";
 
@@ -171,9 +179,11 @@ sub Configure {
 
 }
 
-#########################################################################
+=pod
+=item GetStats():void
+Print hosts statistics.
+=cut
 sub GetStats {
-#########################################################################
 
   my (%all, %result, $k, $i, $json, $hostname, $value, @fields, $file, $hexaddr, $dotaddr);
 
@@ -235,9 +245,11 @@ sub GetStats {
 
 }
 
-#########################################################################
+=pod
+=item GetOverview():void
+Return hosts overview.
+=cut
 sub GetOverview {
-#########################################################################
 
   my (%all, %result, $k, $i, $json, $hostname, $value, @fields, $file, $profile);
 
