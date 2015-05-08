@@ -23,7 +23,7 @@ my $profiles_path = "profiles";
 my $profiles_dir = $web_root.'/'.$profiles_path;
 
 # Read AII configuration
-$cfg = new Config::Simple();
+my $cfg = new Config::Simple();
 $cfg->read('/etc/aii/aii-shellfe.conf');
 
 # PXE Linux directory
@@ -107,7 +107,7 @@ sub GetHosts {
 
   }
 
-  my $json =  JSON::XS->new->pretty->encode({hosts => \@all, available_cfg => \@cfg});
+  $json =  JSON::XS->new->pretty->encode({hosts => \@all, available_cfg => \@cfg});
 
   print "Content-type: application/json\n\n$json";
 
@@ -161,11 +161,11 @@ sub Configure {
     my $ok = system ("/usr/bin/sudo", "/usr/sbin/aii-shellfe", "--remove", $hostname);
     $ok = system ("/usr/bin/sudo", "/usr/sbin/aii-shellfe", "--configure", $hostname);
     $ok = system ("/usr/bin/sudo", "/usr/sbin/aii-shellfe", "--install", $hostname);
-    print "Failed to reinstall $node using aii-shellfe<br>" if ($ok != 0);
+    print "Failed to reinstall $hostname using aii-shellfe<br>" if ($ok != 0);
   }
   else {
     if (system ("/usr/bin/sudo", "/usr/sbin/aii-shellfe", "--$action", $hostname) != 0) {
-        print "Failed to $action $node using aii-shellfe<br>";
+        print "Failed to $action $hostname using aii-shellfe<br>";
       }
   }
 
@@ -175,7 +175,7 @@ sub Configure {
 sub GetStats {
 #########################################################################
 
-  my (%all, %result, $k, $i, $json, $hostname, $value);
+  my (%all, %result, $k, $i, $json, $hostname, $value, @fields, $file, $hexaddr, $dotaddr);
 
   for $k (@profiles) {
 
@@ -183,7 +183,7 @@ sub GetStats {
     $hostname =~ /^(.*)$/;
     $hostname = $1;
 
-    my $file = "$profiles_dir/$profile_prefix$hostname.json";
+    $file = "$profiles_dir/$profile_prefix$hostname.json";
 
     my $json_text = do {
       open(my $json_fh, "<",$file) or die("Can't open $file : $!\n");
@@ -229,7 +229,7 @@ sub GetStats {
     }
   }
 
-  my $json = JSON::XS->new->pretty->encode(\%all);
+  $json = JSON::XS->new->pretty->encode(\%all);
 
   print "Content-type: application/json\n\n$json";
 
@@ -239,7 +239,7 @@ sub GetStats {
 sub GetOverview {
 #########################################################################
 
-  my (%all, %result, $k, $i, $json, $hostname, $value);
+  my (%all, %result, $k, $i, $json, $hostname, $value, @fields, $file, $profile);
 
   for $k (@profiles) {
 
@@ -247,7 +247,7 @@ sub GetOverview {
     $hostname =~ /^(.*)$/;
     $hostname = $1;
 
-    my $file = "$profiles_dir/$profile_prefix$hostname.json";
+    $file = "$profiles_dir/$profile_prefix$hostname.json";
 
     my $json_text = do {
       open(my $json_fh, "<",$file) or die("Can't open $file : $!\n");
@@ -258,7 +258,7 @@ sub GetOverview {
     $_[0] =~ /^(.*)$/;
     $_[0] = $1;
 
-    my $profile = JSON::XS->new->decode($json_text);
+    $profile = JSON::XS->new->decode($json_text);
 
     @fields = split '/' , $_[0];
 
@@ -305,7 +305,7 @@ sub GetOverview {
     }
   }
 
-  my $json = JSON::XS->new->pretty->encode(\%all);
+  $json = JSON::XS->new->pretty->encode(\%all);
 
   print "Content-type: application/json\n\n$json";
 

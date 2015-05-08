@@ -26,7 +26,7 @@ Deployment
 
 * On the web server
     - `yum install httpd mod_wsgi mod_proxy git python-cherrypy python-jinja2`
-    - `git clone https://github.com/samary/dashboard.git`
+    - `git clone https://github.com/IIHE/dashboard.git`
     - Copy the vhost-dashboard.conf to your Apache config directory (eg. /etc/http/conf.d/) and replace the following:
       * AQ_URL - URL of your Aquilon server (including port)
       * AII_URL - URL of your AII server
