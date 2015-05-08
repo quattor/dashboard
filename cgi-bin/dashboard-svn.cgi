@@ -10,7 +10,7 @@ my $repository = "file:///var/www/svn/scdb";
 
 my $query = new CGI;
 
-my $limit = $query->param('limit') ? $query->param('limit') : '10';
+my $limit = $query->param('limit') ? $query->param('limit') : 10;
 
 $limit =~ /(\d+|all)/;
 $limit = $1;
