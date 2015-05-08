@@ -60,10 +60,8 @@ sub GetHexAddr
 
   # We unpack the IP address
   my @tmp_address = unpack('C4',$all_address[0]);
-  my @result;
-  push(@result, sprintf ("%02X%02X%02X%02X",@tmp_address));
-  push(@result, sprintf ("%u.%u.%u.%u",@tmp_address));
-  return @result;
+
+  return sprintf ("%02X%02X%02X%02X",@tmp_address), sprintf ("%u.%u.%u.%u",@tmp_address);
 }
 
 =pod
@@ -74,12 +72,12 @@ sub Initialize
 {
   @profiles = ();
 
-  opendir(DIR,$profiles_dir) || die "failed to opendir $profiles_dir: $!;
+  opendir(DIR,$profiles_dir) || die "failed to opendir $profiles_dir: $!";
   # find all profiles in directory
   push @profiles,map { s/\.json$//; s/^$profile_prefix//; $_ .=''; } sort(grep(/\.json$/, readdir(DIR)));
   closedir(DIR);
 
-  opendir(DIR, $pxelinux_dir) || die "failed to opendir $pxelinux_dir: $!;;
+  opendir(DIR, $pxelinux_dir) || die "failed to opendir $pxelinux_dir: $!";
   # Load the configurations list
   @cfg = sort(grep(/(\.cfg$)|(default)/, readdir(DIR)));
   closedir(DIR);
