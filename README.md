@@ -40,6 +40,7 @@ Deployment
     - Be sure your dashboard webserver can reach this page via HTTP GET requests
 
 * On the SVN client
+    - `yum install -y perl-CAF`
     - `cd /var/www/cgi-bin && wget https://raw.githubusercontent.com/quattor/dashboard/master/cgi-bin/dashboard-svn.cgi`
     - Edit `dashboard-svn.cgi` and set the SVN repository URL
     - Check if the webservice (eg: apache) can run the `/usr/bin/svn` command via sudo (`/etc/sudoers`)
@@ -47,7 +48,16 @@ Deployment
 
 2- Restart Apache. Done.
 
-Licence & Credit
+License & Credit
 ================
 Project forked and extended from Aquilon Console : https://github.com/amazerfrazer/aquilonconsole
-Under Apache2 Licence
+Licensed under Apache2 license (https://github.com/quattor/dashboard/blob/master/LICENSE
+
+* Third-party Licenses
+    - Bootstrap : Licensed under MIT license (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+    - Bootstrap-select : Licensed under MIT license (https://github.com/silviomoreto/bootstrap-select/blob/master/LICENSE)
+    - DataTables : Licensed under MIT license (http://datatables.net/license)
+    - CollapsibleLists : Lincenced under the terms of the CC0 1.0 Universal legal code (http://creativecommons.org/publicdomain/zero/1.0/legalcode)
+    - jqPlot : Dual licensed under the MIT and GPL version 2 licenses (http://www.jqplot.com/info.php)
+    - jQuery : Licensed under MIT license (http://jquery.org/license)
+    - jQuery TableSorter : Dual licensed under the MIT and GPL licenses (https://github.com/Mottie/tablesorter/blob/master/README.md)
