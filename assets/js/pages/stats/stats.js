@@ -114,4 +114,3 @@ function createPlot(name, title, data)
         }
     );
 }
-
