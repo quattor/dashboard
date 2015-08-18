@@ -73,7 +73,7 @@ Read the profile of the given host
 sub ReadProfile
 {
 
-    my $hostname = $_[0];
+    my ($hostname) = @_;
 
     $hostname =~ /^([\w\-\.]+)$/;
     $hostname = $1;
@@ -145,7 +145,7 @@ Print JSON profile of requested host
 =cut
 sub GetProfile
 {
-  my $hostname = $_[0];
+  my ($hostname) = @_;
 
   $hostname =~ /^([\w\-\.]+)$/;
   $hostname = $1;
@@ -218,10 +218,11 @@ sub GetStats
 
     my $profile = ReadProfile($hostname);
 
-    $_[0] =~ /^(.*)$/;
-    $_[0] = $1;
+    my ($stats) = @_;
+    $stats =~ /^(.*)$/;
+    $stats = $1;
 
-    @fields = split '/' , $_[0];
+    @fields = split '/' , $stats;
 
     for my $field(@fields)
     {
@@ -275,10 +276,11 @@ sub GetOverview
 
     $profile = ReadProfile($hostname);
 
-    $_[0] =~ /^(.*)$/;
-    $_[0] = $1;
+    my ($stats) = @_;
+    $stats =~ /^(.*)$/;
+    $stats = $1;
 
-    @fields = split '/' , $_[0];
+    @fields = split '/' , $stats;
 
     for my $field(@fields)
     {
