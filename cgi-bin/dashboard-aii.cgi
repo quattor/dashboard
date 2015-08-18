@@ -35,7 +35,7 @@ my $pxelinux_dir = $cfg->{_}->{nbpdir};
 my $profile_prefix = $cfg->{_}->{profile_prefix} eq 0 ? '' : $cfg->{_}->{profile_prefix};
 
 # cdb url
-my $cdb_url = $cfg->{_}->{cdb_url};
+my $cdburl = $cfg->{_}->{cdburl};
 
 # Number of different boot types
 my %boot_type;
