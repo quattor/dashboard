@@ -67,6 +67,29 @@ sub GetHexAddr
 }
 
 =pod
+=item ReadProfile():hash
+Read the profile of the given host
+=cut
+sub ReadProfile
+{
+
+    my $hostname = $_[0];
+
+    $hostname =~ /^([\w\-\.]+)$/;
+    $hostname = $1;
+
+    my $file = "$profiles_dir/$profile_prefix$hostname.json";
+
+    my $json_text = do {
+        open(my $json_fh, "<:encoding(UTF-8)", $file) or die("Can't open $file: $!\n");
+        local $/;
+        <$json_fh>
+    };
+
+    return JSON::XS->new->decode($json_text);
+}
+
+=pod
 =item Initialize():void
 Find profiles and PXE Configuration
 =cut
@@ -122,26 +145,20 @@ Print JSON profile of requested host
 =cut
 sub GetProfile
 {
-  my $hostname = @_;
-  if ($hostname =~ m/^([\w\-\.]+)$/) {
+  my $hostname = $_[0];
 
-    my $file = "$profiles_dir/$profile_prefix$hostname.json";
+  $hostname =~ /^([\w\-\.]+)$/;
+  $hostname = $1;
 
-      my $json_text = do {
-        open(my $json_fh, "<:encoding(UTF-8)", $file) or die("Can't open $file: $!\n");
-        local $/;
-        <$json_fh>
-      };
+  my $profile = ReadProfile($hostname);
 
-      my $profile = JSON::XS->new->decode($json_text);
-      
-      #Remove sensitive sections
-      $profile->{'software'} = ();
+  #Remove sensitive sections
+  $profile->{'software'} = ();
 
-      my $json =  JSON::XS->new->pretty->allow_nonref->encode($profile);
+  my $json =  JSON::XS->new->pretty->allow_nonref->encode($profile);
 
-      print "Content-type: application/json\n\n$json";
-    }
+  print "Content-type: application/json\n\n$json";
+
 }
 
 =pod
@@ -196,21 +213,13 @@ sub GetStats
   for $k (@profiles) {
 
     $hostname = $k;
-    $hostname =~ m/^([\w\-\.]+)$/;
+    $hostname =~ /^([\w\-\.]+)$/;
     $hostname = $1;
 
-    $file = "$profiles_dir/$profile_prefix$hostname.json";
-
-    my $json_text = do {
-      open(my $json_fh, "<",$file) or die("Can't open $file : $!\n");
-      local $/;
-      <$json_fh>
-    };
+    my $profile = ReadProfile($hostname);
 
     $_[0] =~ /^(.*)$/;
     $_[0] = $1;
-
-    my $profile = JSON::XS->new->decode($json_text);
 
     @fields = split '/' , $_[0];
 
@@ -261,21 +270,13 @@ sub GetOverview
   for $k (@profiles) {
 
     $hostname = $k;
-    $hostname =~ /^(.*)$/;
+    $hostname =~ /^([\w\-\.]+)$/;
     $hostname = $1;
 
-    $file = "$profiles_dir/$profile_prefix$hostname.json";
-
-    my $json_text = do {
-      open(my $json_fh, "<",$file) or die("Can't open $file : $!\n");
-      local $/;
-      <$json_fh>
-    };
+    $profile = ReadProfile($hostname);
 
     $_[0] =~ /^(.*)$/;
     $_[0] = $1;
-
-    $profile = JSON::XS->new->decode($json_text);
 
     @fields = split '/' , $_[0];
 
