@@ -29,13 +29,16 @@ my $pxelinux_dir = $cfg->{_}->{nbpdir};
 # Profile prefix
 my $profile_prefix = $cfg->{_}->{profile_prefix} eq 0 ? '' : $cfg->{_}->{profile_prefix};
 
+# Profile format
+my $profile_format = $cfg->{_}->{profile_format};
+
 # cdb url
 my $cdburl = $cfg->{_}->{cdburl};
 
 # Array of available pxelinux configurations
 my @cfg;
 
-# Profiles .json available
+# Profiles available
 my (@profiles);
 
 =pod
@@ -66,7 +69,7 @@ sub ReadProfile
     $hostname =~ /^([\w\-\.]+)$/;
     $hostname = $1;
 
-    my $file = "$cdburl/$profile_prefix$hostname.json";
+    my $file = "$cdburl/$profile_prefix$hostname.$profile_format";
 
     my $json_text = do {
         open(my $json_fh, "<:encoding(UTF-8)", $file) or die("Can't open $file: $!\n");
@@ -97,7 +100,7 @@ sub Initialize
 
     opendir(DIR,$cdburl) || die "failed to opendir $cdburl: $!";
     # find all profiles in directory
-    push @profiles,map { s/\.json$//; s/^$profile_prefix//; $_ .=''; } sort(grep(/\.json$/, readdir(DIR)));
+    push @profiles,map { s/\.$profile_format$//; s/^$profile_prefix//; $_ .=''; } sort(grep(/\.$profile_format$/, readdir(DIR)));
     closedir(DIR);
 
     opendir(DIR, $pxelinux_dir) || die "failed to opendir $pxelinux_dir: $!";
@@ -335,7 +338,7 @@ sub GetOverview
 # MAIN
 #########################################################################
 
-# Load the directory entries (*.json and *.cfg)
+# Load required variables
 &Initialize;
 
 my $query = new CGI;
