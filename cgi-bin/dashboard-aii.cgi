@@ -51,14 +51,14 @@ hex (as required by pxelinux)
 =cut
 sub GetHexAddr
 {
-  # The 4th field is an array of the IP address of this node
-  my @all_address = (gethostbyname($_[0]))[4];
-  return if ($#all_address < 0);
+    # The 4th field is an array of the IP address of this node
+    my @all_address = (gethostbyname($_[0]))[4];
+    return if ($#all_address < 0);
 
-  # We unpack the IP address
-  my @tmp_address = unpack('C4',$all_address[0]);
+    # We unpack the IP address
+    my @tmp_address = unpack('C4',$all_address[0]);
 
-  return sprintf ("%02X%02X%02X%02X",@tmp_address), sprintf ("%u.%u.%u.%u",@tmp_address);
+    return sprintf ("%02X%02X%02X%02X",@tmp_address), sprintf ("%u.%u.%u.%u",@tmp_address);
 }
 
 =pod
@@ -67,7 +67,6 @@ Read the profile of the given host
 =cut
 sub ReadProfile
 {
-
     my ($hostname) = @_;
 
     $hostname =~ /^([\w\-\.]+)$/;
@@ -91,21 +90,21 @@ Find profiles and PXE Configuration
 sub Initialize
 {
 
-  die "Working only with file:// protocol for cdb : $cdburl" unless $cdburl =~ /^file:\/\//;
+    die "Working only with file:// protocol for cdb : $cdburl" unless $cdburl =~ /^file:\/\//;
 
-  $cdburl =~ s/^file:\/\///;
+    $cdburl =~ s/^file:\/\///;
 
-  @profiles = ();
+    @profiles = ();
 
-  opendir(DIR,$cdburl) || die "failed to opendir $cdburl: $!";
-  # find all profiles in directory
-  push @profiles,map { s/\.json$//; s/^$profile_prefix//; $_ .=''; } sort(grep(/\.json$/, readdir(DIR)));
-  closedir(DIR);
+    opendir(DIR,$cdburl) || die "failed to opendir $cdburl: $!";
+    # find all profiles in directory
+    push @profiles,map { s/\.json$//; s/^$profile_prefix//; $_ .=''; } sort(grep(/\.json$/, readdir(DIR)));
+    closedir(DIR);
 
-  opendir(DIR, $pxelinux_dir) || die "failed to opendir $pxelinux_dir: $!";
-  # Load the configurations list
-  @cfg = sort(grep(/(\.cfg$)|(default)/, readdir(DIR)));
-  closedir(DIR);
+    opendir(DIR, $pxelinux_dir) || die "failed to opendir $pxelinux_dir: $!";
+    # Load the configurations list
+    @cfg = sort(grep(/(\.cfg$)|(default)/, readdir(DIR)));
+    closedir(DIR);
 }
 
 =pod
@@ -114,37 +113,34 @@ Print hosts list
 =cut
 sub GetHosts
 {
-  my (@all, $k, $json);
+    my (@all, $k, $json);
 
-  for $k (@profiles) {
+    for $k (@profiles) {
 
-    my $hostname = $k;
+        my $hostname = $k;
+        my ($hexaddr, $dotaddr) = GetHexAddr($hostname);
+        my $link = "$pxelinux_dir/$hexaddr";
+        my $existing_cfg;
 
-    my ($hexaddr, $dotaddr) = GetHexAddr($hostname);
-
-    my $link = "$pxelinux_dir/$hexaddr";
-    if (! -f $link) {
-
-       next;
-    }
-    else
-    {
-        my $config = readlink($link);
-        my $existing_cfg = $config ? $config : "";
+        if (-f $link) {
+            my $config = readlink($link);
+            $existing_cfg = $config ? $config : 'NO CONFIG';
+        }
+        else {
+            $existing_cfg = 'NO CONFIG';
+        }
 
         push @all ,{
-            'hostname' => $hostname,
-            'hexaddr' => $hexaddr,
-            'dotaddr' => $dotaddr,
-            'bootcfg' => $existing_cfg
+        'hostname' => $hostname,
+        'hexaddr' => $hexaddr,
+        'dotaddr' => $dotaddr,
+        'bootcfg' => $existing_cfg
         };
     }
 
-  }
+    $json =  JSON::XS->new->pretty->encode({hosts => \@all, available_cfg => \@cfg});
 
-  $json =  JSON::XS->new->pretty->encode({hosts => \@all, available_cfg => \@cfg});
-
-  print "Content-type: application/json\n\n$json";
+    print "Content-type: application/json\n\n$json";
 }
 
 =pod
@@ -153,20 +149,19 @@ Print JSON profile of requested host
 =cut
 sub GetProfile
 {
-  my ($hostname) = @_;
+    my ($hostname) = @_;
 
-  $hostname =~ /^([\w\-\.]+)$/;
-  $hostname = $1;
+    $hostname =~ /^([\w\-\.]+)$/;
+    $hostname = $1;
 
-  my $profile = ReadProfile($hostname);
+    my $profile = ReadProfile($hostname);
 
-  #Remove sensitive sections
-  $profile->{'software'} = ();
+    #Remove sensitive sections
+    $profile->{'software'} = ();
 
-  my $json =  JSON::XS->new->pretty->allow_nonref->encode($profile);
+    my $json =  JSON::XS->new->pretty->allow_nonref->encode($profile);
 
-  print "Content-type: application/json\n\n$json";
-
+    print "Content-type: application/json\n\n$json";
 }
 
 =pod
@@ -216,56 +211,55 @@ Print hosts statistics.
 =cut
 sub GetStats
 {
-  my (%all, %result, $k, $i, $json, $hostname, $value, @fields, $file, $hexaddr, $dotaddr);
+    my (%all, %result, $k, $i, $json, $hostname, $value, @fields, $file, $hexaddr, $dotaddr);
 
-  for $k (@profiles) {
+    for $k (@profiles) {
 
-    $hostname = $k;
-    $hostname =~ /^([\w\-\.]+)$/;
-    $hostname = $1;
+        $hostname = $k;
+        $hostname =~ /^([\w\-\.]+)$/;
+        $hostname = $1;
 
-    my $profile = ReadProfile($hostname);
+        my $profile = ReadProfile($hostname);
 
-    my ($stats) = @_;
-    $stats =~ /^(.*)$/;
-    $stats = $1;
+        my ($stats) = @_;
+        $stats =~ /^(.*)$/;
+        $stats = $1;
 
-    @fields = split '/' , $stats;
+        @fields = split '/' , $stats;
 
-    for my $field(@fields)
-    {
-      $value = '';
-      switch($field) {
-        case 'kernel' {
-          $value = $profile->{'system'}->{'kernel'}->{'version'};
+        for my $field(@fields) {
+
+            $value = '';
+            switch($field) {
+                case 'kernel' {
+                    $value = $profile->{'system'}->{'kernel'}->{'version'};
+                }
+                case 'os' {
+                    $value = $profile->{'system'}->{'aii'}->{'nbp'}->{'pxelinux'}->{'label'};
+                }
+                case 'bootcfg' {
+                    my ($hexaddr,$dotaddr) = GetHexAddr($hostname);
+                    my $link = readlink("$pxelinux_dir/$hexaddr");
+
+                    if ($link eq 'localboot.cfg') {
+                        $value = 'boot';
+                    }
+                    elsif (!$link or $link eq '') {
+                        $value = 'unconfigured';
+                    }
+                    else {
+                        $value = 'install';
+                    }
+                }
+            }
+
+            $all{$field}{$hostname} = $value;
         }
-        case 'os' {
-          $value = $profile->{'system'}->{'aii'}->{'nbp'}->{'pxelinux'}->{'label'};
-        }
-        case 'bootcfg' {
-          ($hexaddr,$dotaddr) = GetHexAddr($hostname);
-          my $link = readlink("$pxelinux_dir/$hexaddr");
-
-          if ($link eq 'localboot.cfg') {
-            $value = 'boot';
-          }
-          elsif (!$link or $link eq '') {
-            $value = 'unconfigured';
-          }
-          else {
-            $value = 'install';
-          }
-        }
-
-      }
-
-      $all{$field}{$hostname} = $value;
     }
-  }
 
-  $json = JSON::XS->new->pretty->encode(\%all);
+    $json = JSON::XS->new->pretty->encode(\%all);
 
-  print "Content-type: application/json\n\n$json";
+    print "Content-type: application/json\n\n$json";
 }
 
 =pod
@@ -274,68 +268,68 @@ Return hosts overview.
 =cut
 sub GetOverview
 {
-  my (%all, %result, $k, $i, $json, $hostname, $value, @fields, $file, $profile);
+    my (%all, %result, $k, $i, $json, $hostname, $value, @fields, $file, $profile);
 
-  for $k (@profiles) {
+    for $k (@profiles) {
 
-    $hostname = $k;
-    $hostname =~ /^([\w\-\.]+)$/;
-    $hostname = $1;
+        $hostname = $k;
+        $hostname =~ /^([\w\-\.]+)$/;
+        $hostname = $1;
 
-    $profile = ReadProfile($hostname);
+        $profile = ReadProfile($hostname);
 
-    my ($stats) = @_;
-    $stats =~ /^(.*)$/;
-    $stats = $1;
+        my ($stats) = @_;
+        $stats =~ /^(.*)$/;
+        $stats = $1;
 
-    @fields = split '/' , $stats;
+        @fields = split '/' , $stats;
 
-    for my $field(@fields)
-    {
-      $value = '';
-      switch($field) {
-        case 'kernel' {
-          $value = $profile->{'system'}->{'kernel'}->{'version'}
-        }
-        case 'os' {
-          $value = $profile->{'system'}->{'aii'}->{'nbp'}->{'pxelinux'}->{'label'}
-        }
-        case 'location' {
-          $value = $profile->{'hardware'}->{'location'}
-        }
-        case 'serialnumber' {
-          $value = $profile->{'hardware'}->{'serialnumber'}
-        }
-        case 'macaddress' {
-            for my $key (sort keys %{$profile->{'hardware'}->{'cards'}->{'nic'}}) {
-              $value .= "$key : $profile->{'hardware'}->{'cards'}->{'nic'}->{$key}->{'hwaddr'}\n";
+        for my $field(@fields) {
+
+            $value = '';
+            switch($field) {
+                case 'kernel' {
+                    $value = $profile->{'system'}->{'kernel'}->{'version'}
+                }
+                case 'os' {
+                    $value = $profile->{'system'}->{'aii'}->{'nbp'}->{'pxelinux'}->{'label'}
+                }
+                case 'location' {
+                    $value = $profile->{'hardware'}->{'location'}
+                }
+                case 'serialnumber' {
+                  $value = $profile->{'hardware'}->{'serialnumber'}
+                }
+                case 'macaddress' {
+                    for my $key (sort keys %{$profile->{'hardware'}->{'cards'}->{'nic'}}) {
+                        $value .= "$key : $profile->{'hardware'}->{'cards'}->{'nic'}->{$key}->{'hwaddr'}\n";
+                    }
+                }
+                case 'ipaddress' {
+                    for my $key (sort keys %{$profile->{'system'}->{'network'}->{'interfaces'}}) {
+                        $value .= "$key : $profile->{'system'}->{'network'}->{'interfaces'}->{$key}->{'ip'}\n";
+                    }
+                }
+                case 'ram' {
+                    for $i ( 0 .. $#{ $profile->{'hardware'}->{'ram'} } ) {
+                        $value += $profile->{'hardware'}->{'ram'}[$i]->{'size'};
+                    }
+                    $value .= " Mb";
+                }
+                case 'cpu' {
+                    for $i ( 0 .. $#{ $profile->{'hardware'}->{'cpu'} } ) {
+                        $value += $profile->{'hardware'}->{'cpu'}[$i]->{'cores'};
+                    }
+                    $value .= " cores";
+                }
             }
+            $all{$hostname}{$field} = $value;
         }
-        case 'ipaddress' {
-          for my $key (sort keys %{$profile->{'system'}->{'network'}->{'interfaces'}}) {
-            $value .= "$key : $profile->{'system'}->{'network'}->{'interfaces'}->{$key}->{'ip'}\n";
-          }
-        }
-        case 'ram' {
-          for $i ( 0 .. $#{ $profile->{'hardware'}->{'ram'} } ) {
-            $value += $profile->{'hardware'}->{'ram'}[$i]->{'size'};
-          }
-          $value .= " Mb";
-        }
-        case 'cpu' {
-          for $i ( 0 .. $#{ $profile->{'hardware'}->{'cpu'} } ) {
-            $value += $profile->{'hardware'}->{'cpu'}[$i]->{'cores'};
-          }
-          $value .= " cores";
-        }
-      }
-      $all{$hostname}{$field} = $value;
     }
-  }
 
-  $json = JSON::XS->new->pretty->encode(\%all);
+    $json = JSON::XS->new->pretty->encode(\%all);
 
-  print "Content-type: application/json\n\n$json";
+    print "Content-type: application/json\n\n$json";
 }
 
 #########################################################################
