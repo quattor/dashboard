@@ -90,7 +90,12 @@ Find profiles and PXE Configuration
 sub Initialize
 {
 
-    die "Working only with file:// protocol for cdb : $cdburl" unless $cdburl =~ /^file:\/\//;
+    if ($cdburl =~ m/^file:\/\/(\S+)$/ ) {
+        $cdburl = $1;
+    }
+    else {
+      die("Working only with file:// protocol for cdb : $cdburl");
+    }
 
     $cdburl =~ s/^file:\/\///;
 
