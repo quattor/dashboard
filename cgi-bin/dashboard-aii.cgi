@@ -13,6 +13,8 @@ use Config::Tiny;
 use JSON::XS;
 use Switch;
 use CGI;
+use IO::File;
+use IO::Zlib;
 
 # Configuration file to boot from HD. Following pxelinux convention
 # it must be called default so if the <IpAddressInHex> link
@@ -69,15 +71,29 @@ sub ReadProfile
     $hostname =~ /^([\w\-\.]+)$/;
     $hostname = $1;
 
-    my $file = "$cdburl/$profile_prefix$hostname.$profile_format";
+    my $filename = "$cdburl/$profile_prefix$hostname.$profile_format";
 
-    my $json_text = do {
-        open(my $json_fh, "<:encoding(UTF-8)", $file) or die("Can't open $file: $!\n");
-        local $/;
-        <$json_fh>
-    };
+    if (!-f "$filename") {
+        die("$filename doesn't exist !")
+    }
+    else {
+        my $fh;
+        if ($profile_format eq 'json.gz') {
+            $fh =  new IO::Zlib;
+        } elsif ($profile_format eq 'json') {
+            $fh =  new IO::File;
+        } else {
+            die ("Can't handle profile format : $profile_format");
+        }
 
-    return JSON::XS->new->decode($json_text);
+        if($fh->open($filename, 'r')) {
+            my $json_text = join('', <$fh>);
+            $fh->close();
+            return JSON::XS->new->decode($json_text);
+        } else {
+            die("Cannot open $filename");
+        }
+    }
 }
 
 =pod
@@ -92,6 +108,10 @@ sub Initialize
     }
     else {
       die("Working only with file:// protocol for cdb : $cdburl");
+    }
+
+    unless ($profile_format =~ m/json/ ) {
+        die("Working only with json format for profiles : $profile_format");
     }
 
     $cdburl =~ s/^file:\/\///;

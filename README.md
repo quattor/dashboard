@@ -37,6 +37,7 @@ Deployment
 
 * On the AII server
     - `cd /var/www/cgi-bin && wget https://raw.githubusercontent.com/quattor/dashboard/master/cgi-bin/dashboard-aii.cgi`
+    - `yum install -y perl-IO-Zlib`
     - Be sure your dashboard webserver can reach this page via HTTP GET requests
 
 * On the SVN client
