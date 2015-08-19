@@ -32,14 +32,8 @@ my $profile_prefix = $cfg->{_}->{profile_prefix} eq 0 ? '' : $cfg->{_}->{profile
 # cdb url
 my $cdburl = $cfg->{_}->{cdburl};
 
-# Number of different boot types
-my %boot_type;
-
 # Array of available pxelinux configurations
 my @cfg;
-
-# Data collected from the form
-my %nodes_cfg;
 
 # Profiles .json available
 my (@profiles);
@@ -108,7 +102,7 @@ sub Initialize
 
     opendir(DIR, $pxelinux_dir) || die "failed to opendir $pxelinux_dir: $!";
     # Load the configurations list
-    @cfg = sort(grep(/(\.cfg$)|(default)/, readdir(DIR)));
+    @cfg = sort(grep(/(\.cfg$)|($boothd)/, readdir(DIR)));
     closedir(DIR);
 }
 
@@ -216,11 +210,11 @@ Print hosts statistics.
 =cut
 sub GetStats
 {
-    my (%all, %result, $k, $i, $json, $hostname, $value, @fields, $file, $hexaddr, $dotaddr);
+    my (%all, $json);
 
-    for $k (@profiles) {
+    for my $k (@profiles) {
 
-        $hostname = $k;
+        my $hostname = $k;
         $hostname =~ /^([\w\-\.]+)$/;
         $hostname = $1;
 
@@ -230,11 +224,11 @@ sub GetStats
         $stats =~ /^(.*)$/;
         $stats = $1;
 
-        @fields = split '/' , $stats;
+        my @fields = split '/' , $stats;
 
         for my $field(@fields) {
 
-            $value = '';
+            my $value = '';
             switch($field) {
                 case 'kernel' {
                     $value = $profile->{'system'}->{'kernel'}->{'version'};
@@ -273,25 +267,25 @@ Return hosts overview.
 =cut
 sub GetOverview
 {
-    my (%all, %result, $k, $i, $json, $hostname, $value, @fields, $file, $profile);
+    my (%all, $json);
 
-    for $k (@profiles) {
+    for my $k (@profiles) {
 
-        $hostname = $k;
+        my $hostname = $k;
         $hostname =~ /^([\w\-\.]+)$/;
         $hostname = $1;
 
-        $profile = ReadProfile($hostname);
+        my $profile = ReadProfile($hostname);
 
         my ($stats) = @_;
         $stats =~ /^(.*)$/;
         $stats = $1;
 
-        @fields = split '/' , $stats;
+        my @fields = split '/' , $stats;
 
         for my $field(@fields) {
 
-            $value = '';
+            my $value = '';
             switch($field) {
                 case 'kernel' {
                     $value = $profile->{'system'}->{'kernel'}->{'version'}
@@ -316,13 +310,13 @@ sub GetOverview
                     }
                 }
                 case 'ram' {
-                    for $i ( 0 .. $#{ $profile->{'hardware'}->{'ram'} } ) {
+                    for my $i ( 0 .. $#{ $profile->{'hardware'}->{'ram'} } ) {
                         $value += $profile->{'hardware'}->{'ram'}[$i]->{'size'};
                     }
                     $value .= " Mb";
                 }
                 case 'cpu' {
-                    for $i ( 0 .. $#{ $profile->{'hardware'}->{'cpu'} } ) {
+                    for my $i ( 0 .. $#{ $profile->{'hardware'}->{'cpu'} } ) {
                         $value += $profile->{'hardware'}->{'cpu'}[$i]->{'cores'};
                     }
                     $value .= " cores";
