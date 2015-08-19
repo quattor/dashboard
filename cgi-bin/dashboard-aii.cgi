@@ -19,11 +19,6 @@ use CGI;
 # is missing the node will boot from the hard disk
 my $boothd = "default";
 
-# Quattor profiles
-my $web_root = "/var/www/html";
-my $profiles_path = "profiles";
-my $profiles_dir = $web_root.'/'.$profiles_path;
-
 # Read AII configuration
 my $cfg = new Config::Tiny();
 $cfg = $cfg->read('/etc/aii/aii-shellfe.conf');
@@ -78,7 +73,7 @@ sub ReadProfile
     $hostname =~ /^([\w\-\.]+)$/;
     $hostname = $1;
 
-    my $file = "$profiles_dir/$profile_prefix$hostname.json";
+    my $file = "$cdburl/$profile_prefix$hostname.json";
 
     my $json_text = do {
         open(my $json_fh, "<:encoding(UTF-8)", $file) or die("Can't open $file: $!\n");
@@ -95,9 +90,14 @@ Find profiles and PXE Configuration
 =cut
 sub Initialize
 {
+
+  die "Working only with file:// protocol for cdb : $cdburl" unless $cdburl =~ /^file:\/\//;
+
+  $cdburl =~ s/^file:\/\///;
+
   @profiles = ();
 
-  opendir(DIR,$profiles_dir) || die "failed to opendir $profiles_dir: $!";
+  opendir(DIR,$cdburl) || die "failed to opendir $cdburl: $!";
   # find all profiles in directory
   push @profiles,map { s/\.json$//; s/^$profile_prefix//; $_ .=''; } sort(grep(/\.json$/, readdir(DIR)));
   closedir(DIR);
@@ -122,15 +122,23 @@ sub GetHosts
 
     my ($hexaddr, $dotaddr) = GetHexAddr($hostname);
 
-    my $link = readlink("$pxelinux_dir/$hexaddr");
-    my $existing_cfg = $link ? $link : "";
+    my $link = "$pxelinux_dir/$hexaddr";
+    if (! -f $link) {
 
-    push @all ,{
-        'hostname' => $hostname,
-        'hexaddr' => $hexaddr,
-        'dotaddr' => $dotaddr,
-        'bootcfg' => $existing_cfg
-    };
+       next;
+    }
+    else
+    {
+        my $config = readlink($link);
+        my $existing_cfg = $config ? $config : "";
+
+        push @all ,{
+            'hostname' => $hostname,
+            'hexaddr' => $hexaddr,
+            'dotaddr' => $dotaddr,
+            'bootcfg' => $existing_cfg
+        };
+    }
 
   }
 
