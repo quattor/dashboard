@@ -44,7 +44,7 @@ my @cfg;
 my (@profiles);
 
 =pod
-=item GetHexAddr():void
+=item GetHexAddr($hostname):(HEXADDRESS,IPADDRESS)
 Get the hostname or an IP address and return the IP address in
 hex (as required by pxelinux)
 =cut
@@ -61,7 +61,7 @@ sub GetHexAddr
 }
 
 =pod
-=item ReadProfile():hash
+=item ReadProfile($hostname):hash
 Read the profile of the given host
 =cut
 sub ReadProfile
@@ -166,7 +166,7 @@ sub GetHosts
 }
 
 =pod
-=item GetProfile():void
+=item GetProfile($hostname):void
 Print JSON profile of requested host
 =cut
 sub GetProfile
@@ -187,7 +187,7 @@ sub GetProfile
 }
 
 =pod
-=item Configure():void
+=item Configure($action,$hostname):void
 Call aii-shellfe actions
 =cut
 sub Configure
@@ -228,7 +228,7 @@ sub Configure
 }
 
 =pod
-=item GetValues($stats,$format):string
+=item GetValues($stats,$format):void
 Return hosts overview.
 =cut
 sub GetValues
@@ -256,36 +256,36 @@ sub GetValues
             my $value = '';
             switch($field) {
                 case 'kernel' {
-                    $value = $profile->{'system'}->{'kernel'}->{'version'};
+                    $value = $profile->{'system'}{'kernel'}{'version'};
                 }
                 case 'os' {
-                    $value = $profile->{'system'}->{'aii'}->{'nbp'}->{'pxelinux'}->{'label'};
+                    $value = $profile->{'system'}{'aii'}{'nbp'}{'pxelinux'}{'label'};
                 }
                 case 'location' {
-                    $value = $profile->{'hardware'}->{'location'};
+                    $value = $profile->{'hardware'}{'location'};
                 }
                 case 'serialnumber' {
-                  $value = $profile->{'hardware'}->{'serialnumber'};
+                  $value = $profile->{'hardware'}{'serialnumber'};
                 }
                 case 'macaddress' {
-                    for my $key (sort keys %{$profile->{'hardware'}->{'cards'}->{'nic'}}) {
-                        $value .= "$key : $profile->{'hardware'}->{'cards'}->{'nic'}->{$key}->{'hwaddr'}\n";
+                    for my $key (sort keys %{$profile->{'hardware'}{'cards'}{'nic'}}) {
+                        $value .= "$key : $profile->{'hardware'}{'cards'}{'nic'}{$key}{'hwaddr'}\n";
                     }
                 }
                 case 'ipaddress' {
-                    for my $key (sort keys %{$profile->{'system'}->{'network'}->{'interfaces'}}) {
-                        $value .= "$key : $profile->{'system'}->{'network'}->{'interfaces'}->{$key}->{'ip'}\n";
+                    for my $key (sort keys %{$profile->{'system'}{'network'}{'interfaces'}}) {
+                        $value .= "$key : $profile->{'system'}{'network'}{'interfaces'}{$key}{'ip'}\n";
                     }
                 }
                 case 'ram' {
-                    for my $i ( 0 .. $#{ $profile->{'hardware'}->{'ram'} } ) {
-                        $value += $profile->{'hardware'}->{'ram'}[$i]->{'size'};
+                    for my $i ( 0 .. $#{ $profile->{'hardware'}{'ram'} } ) {
+                        $value += $profile->{'hardware'}{'ram'}[$i]{'size'};
                     }
                     $value .= " Mb";
                 }
                 case 'cpu' {
-                    for my $i ( 0 .. $#{ $profile->{'hardware'}->{'cpu'} } ) {
-                        $value += $profile->{'hardware'}->{'cpu'}[$i]->{'cores'};
+                    for my $i ( 0 .. $#{ $profile->{'hardware'}{'cpu'} } ) {
+                        $value += $profile->{'hardware'}{'cpu'}[$i]{'cores'};
                     }
                     $value .= " cores";
                 }
