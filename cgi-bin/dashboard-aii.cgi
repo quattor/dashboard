@@ -29,7 +29,7 @@ $cfg = $cfg->read('/etc/aii/aii-shellfe.conf');
 my $pxelinux_dir = $cfg->{_}->{nbpdir};
 
 # Profile prefix
-my $profile_prefix = $cfg->{_}->{profile_prefix};
+my $profile_prefix = $cfg->{_}->{profile_prefix} ? $cfg->{_}->{profile_prefix} : '';
 
 # Profile format
 my $profile_format = $cfg->{_}->{profile_format};
@@ -328,18 +328,18 @@ sub GetValues
 
 my $query = new CGI;
 
-my $action = $query->param('action') ? $query->param('action') : '';
+my $action = $query->param('action') ? $query->param('action') : 0;
 
-my $requested_host = $query->param('hostname') ? $query->param('hostname') : '';
+my $requested_host = $query->param('hostname') ? $query->param('hostname') : 0;
 
-my $host_valid = $requested_host ne '' and grep(/^$requested_host/,@profiles) ? $requested_host : '' ;
+my $host_valid = $requested_host ne '' and grep(/^$requested_host/,@profiles) ? 1 : 0 ;
 
-my $option = $query->param('option') ? $query->param('option') : '';
+my $option = $query->param('option') ? $query->param('option') : 0;
 
-my $stats = $query->param('stats') ? $query->param('stats') : '';
+my $stats = $query->param('stats') ? $query->param('stats') : 0;
 
 if ($action eq 'getHosts') { &GetHosts(); }
-elsif ($action eq 'getProfile' and $host_valid ne '') { &GetProfile($requested_host); }
-elsif ($action eq 'configure' and $option ne '' and $host_valid ne '') { &Configure($option, $requested_host); }
-elsif ($action eq 'getStats' and $stats ne '') { &GetValues($stats,'stats'); }
-elsif ($action eq 'getOverview' and $stats ne '') { &GetValues($stats,'overview'); }
+elsif ($action eq 'getProfile' and $host_valid) { &GetProfile($requested_host); }
+elsif ($action eq 'configure' and $option and $host_valid) { &Configure($option, $requested_host); }
+elsif ($action eq 'getStats' and $stats) { &GetValues($stats,'stats'); }
+elsif ($action eq 'getOverview' and $stats) { &GetValues($stats,'overview'); }
