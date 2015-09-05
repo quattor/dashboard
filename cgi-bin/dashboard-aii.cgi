@@ -228,11 +228,19 @@ sub Configure
 }
 
 =pod
-=item GetStats():void
-Print hosts statistics.
+=item GetValues($stats,$format):string
+Return hosts overview.
 =cut
-sub GetStats
+sub GetValues
 {
+    my ($stats, $format) = @_;
+    $stats =~ /^(.*)$/;
+    $stats = $1;
+    $format =~ /^(stats|overview)$/;
+    $format = $1;
+
+    my @fields = split '/' , $stats;
+
     my (%all, $json);
 
     for my $k (@profiles) {
@@ -242,12 +250,6 @@ sub GetStats
         $hostname = $1;
 
         my $profile = ReadProfile($hostname);
-
-        my ($stats) = @_;
-        $stats =~ /^(.*)$/;
-        $stats = $1;
-
-        my @fields = split '/' , $stats;
 
         for my $field(@fields) {
 
@@ -259,68 +261,11 @@ sub GetStats
                 case 'os' {
                     $value = $profile->{'system'}->{'aii'}->{'nbp'}->{'pxelinux'}->{'label'};
                 }
-                case 'bootcfg' {
-                    my ($hexaddr,$dotaddr) = GetHexAddr($hostname);
-                    my $link = readlink("$pxelinux_dir/$hexaddr");
-
-                    if ($link eq 'localboot.cfg') {
-                        $value = 'boot';
-                    }
-                    elsif (!$link or $link eq '') {
-                        $value = 'unconfigured';
-                    }
-                    else {
-                        $value = 'install';
-                    }
-                }
-            }
-
-            $all{$field}{$hostname} = $value;
-        }
-    }
-
-    $json = JSON::XS->new->pretty->encode(\%all);
-
-    print "Content-type: application/json\n\n$json";
-}
-
-=pod
-=item GetOverview():void
-Return hosts overview.
-=cut
-sub GetOverview
-{
-    my (%all, $json);
-
-    for my $k (@profiles) {
-
-        my $hostname = $k;
-        $hostname =~ /^([\w\-\.]+)$/;
-        $hostname = $1;
-
-        my $profile = ReadProfile($hostname);
-
-        my ($stats) = @_;
-        $stats =~ /^(.*)$/;
-        $stats = $1;
-
-        my @fields = split '/' , $stats;
-
-        for my $field(@fields) {
-
-            my $value = '';
-            switch($field) {
-                case 'kernel' {
-                    $value = $profile->{'system'}->{'kernel'}->{'version'}
-                }
-                case 'os' {
-                    $value = $profile->{'system'}->{'aii'}->{'nbp'}->{'pxelinux'}->{'label'}
-                }
                 case 'location' {
-                    $value = $profile->{'hardware'}->{'location'}
+                    $value = $profile->{'hardware'}->{'location'};
                 }
                 case 'serialnumber' {
-                  $value = $profile->{'hardware'}->{'serialnumber'}
+                  $value = $profile->{'hardware'}->{'serialnumber'};
                 }
                 case 'macaddress' {
                     for my $key (sort keys %{$profile->{'hardware'}->{'cards'}->{'nic'}}) {
@@ -344,8 +289,28 @@ sub GetOverview
                     }
                     $value .= " cores";
                 }
+                case 'bootcfg' {
+                    my ($hexaddr,$dotaddr) = GetHexAddr($hostname);
+                    my $link = readlink("$pxelinux_dir/$hexaddr");
+
+                    if ($link eq 'localboot.cfg') {
+                        $value = 'boot';
+                    }
+                    elsif (!$link or $link eq '') {
+                        $value = 'unconfigured';
+                    }
+                    else {
+                        $value = 'install';
+                    }
+                }
             }
-            $all{$hostname}{$field} = $value;
+
+            if($format eq 'stats') {
+                $all{$field}{$hostname} = $value;
+            }
+            elsif($format eq 'overview') {
+                $all{$hostname}{$field} = $value;
+            }
         }
     }
 
@@ -376,5 +341,5 @@ my $stats = $query->param('stats') ? $query->param('stats') : '';
 if ($action eq 'getHosts') { &GetHosts(); }
 elsif ($action eq 'getProfile' and $host_valid ne '') { &GetProfile($requested_host); }
 elsif ($action eq 'configure' and $option ne '' and $host_valid ne '') { &Configure($option, $requested_host); }
-elsif ($action eq 'getStats' and $stats ne '') { &GetStats($stats); }
-elsif ($action eq 'getOverview' and $stats ne '') { &GetOverview($stats); }
+elsif ($action eq 'getStats' and $stats ne '') { &GetValues($stats,'stats'); }
+elsif ($action eq 'getOverview' and $stats ne '') { &GetValues($stats,'overview'); }
