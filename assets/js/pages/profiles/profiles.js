@@ -44,16 +44,16 @@ function createallhoststable()
             $(data['hosts']).each(function (k, host)
             {
                 var hostname = host['hostname'];
-                var disabled = '';
+                var toDisable = '';
 
-                if (host['bootcfg'] == 'localboot.cfg') disabled = 'boot';
-                else if (host['bootcfg'] != '') disabled = 'install';
+                if (host['bootcfg'] == 'localboot.cfg') toDisable = 'boot';
+                else if (host['bootcfg'] != '') toDisable = 'install';
 
                 var aii_actions_html = '';
 
                 $.each(aii_actions, function (k, action)
                 {
-                    disabled = action == disabled ? 'disabled' : '';
+                    var disabled = action == toDisable ? 'disabled' : '';
 
                     aii_actions_html += '<button title="' + action + '" class="btn btn-xs ' + color[action] + '" onclick="configure(\'' + action + '\',\'' + hostname + '\')" ' + disabled + '>' +
                     '<span class="glyphicon ' + icon[action] + '" />' +
