@@ -289,6 +289,12 @@ sub GetValues
                     }
                     $value .= " cores";
                 }
+                case 'hdcapacity' {
+                    for my $key (sort keys %{$profile->{'hardware'}{'harddisks'}}) {
+                        my $cap = $profile->{'hardware'}{'harddisks'}{$key}{'capacity'} / 1024;
+                        $value .= "$key : $cap Gb\n";
+                    }
+                }
                 case 'bootcfg' {
                     my ($hexaddr,$dotaddr) = GetHexAddr($hostname);
                     my $link = readlink("$pxelinux_dir/$hexaddr");
