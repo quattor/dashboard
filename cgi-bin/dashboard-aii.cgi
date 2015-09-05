@@ -29,7 +29,7 @@ $cfg = $cfg->read('/etc/aii/aii-shellfe.conf');
 my $pxelinux_dir = $cfg->{_}->{nbpdir};
 
 # Profile prefix
-my $profile_prefix = $cfg->{_}->{profile_prefix} eq 0 ? '' : $cfg->{_}->{profile_prefix};
+my $profile_prefix = $cfg->{_}->{profile_prefix};
 
 # Profile format
 my $profile_format = $cfg->{_}->{profile_format};
