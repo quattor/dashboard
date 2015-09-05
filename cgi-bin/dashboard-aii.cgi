@@ -283,7 +283,7 @@ sub GetValues
                     }
                     $value .= " Mb";
                 }
-                case 'cpu' {
+                case 'cores' {
                     for my $i ( 0 .. $#{ $profile->{'hardware'}{'cpu'} } ) {
                         $value += $profile->{'hardware'}{'cpu'}[$i]{'cores'};
                     }

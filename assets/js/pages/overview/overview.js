@@ -6,7 +6,7 @@ var fields = {
     'macaddress': 'Mac Addresses',
     'ipaddress': 'IP Addresses',
     'ram': 'RAM',
-    'cpu': 'CPU'
+    'cores': 'CPU'
 };
 
 var categories = {
@@ -16,7 +16,7 @@ var categories = {
 };
 
 var cat_field = {
-    'hw': [{'serialnumber': true}, {'location': true}, {'ram': false}, {'cpu': false}],
+    'hw': [{'serialnumber': true}, {'location': true}, {'ram': false}, {'cores': false}],
     'net': [{'macaddress': true}, {'ipaddress': true}],
     'sw': [{'os': true}, {'kernel': false}]
 };
