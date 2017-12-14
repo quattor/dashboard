@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="Quattor Dashboard">
+    <title>Quattor Dashboard</title>
+    <link rel="shortcut icon" href="/assets/images/favicon.ico" sizes="16x16 32x32 48x48 64x64">
+    <link href='http://fonts.googleapis.com/css?family=Roboto:100,400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="/assets/css/theme.css" type="text/css" />
+    {% block css %}{% endblock %}
+</head>
+<body>
+<nav id="navigation" class="fixed-top" role="navigation">
+    <div class="container">
+        <a class="brand pull-left" href="/">
+            <img src="/assets/images/quattor_logo_large.png" alt="Quattor Dashboard" /><br />dashboard
+        </a>
+
+        <div class="mobile-menu pull-right" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </div>
+        <ul class="main-menu nav navbar-nav collapse navbar-collapse">
+            <li><a href="/profiles">Profiles</a></li>
+            <li><a href="/overview">Overview</a></li>
+            <li><a href="/svnlogs">SVN Logs</a></li>
+            <li><a href="/stats">Statistics</a></li>
+            <li id="aq_menu" class="dropdown">
+                <a href="#" data-toggle="dropdown" class="dropdown-toggle">Aquilon
+                    <b class="caret"></b></a>
+                <ul class="dropdown-menu" style="text-align:left">
+                    <li><a href="/hosts">Hosts</a></li>
+                    <li><a href="/personalities">Personalities</a>
+                    </li>
+                    <li><a href="/az">A-Z</a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<div class="container">
+    <div id="loading">
+        <img src="/assets/images/loading.gif" /><br />Loading
+    </div>
+
+    {% block content %}{% endblock %}
+</div>
+
+<script src="/assets/js/jquery-1.11.0.min.js"></script>
+<script src="/assets/js/bootstrap.min.js"></script>
+<script src="/assets/js/pages/config.js"></script>
+
+<script>
+    $(function ()
+    {
+        if (AQUILON_URL == '') $('#aq_menu').hide();
+
+        $("#loading").hide();
+
+        $(document).bind("ajaxSend", function ()
+        {
+            $("#loading").show();
+        }).bind("ajaxComplete", function ()
+        {
+            $("#loading").hide();
+        });
+
+    });
+</script>
+
+{% block javascript %}{% endblock %}
+
+</body>
+</html>

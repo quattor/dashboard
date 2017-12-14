@@ -1,0 +1,58 @@
+{% extends "templates/layout.html" %}
+
+{% block css %}
+<link rel="stylesheet" href="/assets/css/dataTables.bootstrap.css" type="text/css" />
+{% endblock %}
+
+{% block javascript %}
+<script src="/assets/js/jquery.dataTables.min.js"></script>
+<script src="/assets/js/dataTables.bootstrap.min.js"></script>
+<script src="/assets/js/CollapsibleLists.js"></script>
+<script src="/assets/js/pages/profiles/profiles.js"></script>
+<script src="/assets/js/pages/profiles/dialogue.js"></script>
+{% endblock %}
+
+{% block content %}
+<div id="pagemanage">
+    <h1>Hosts</h1>
+    <br />
+    <table id="hostlist" class="table table-striped">
+        <thead>
+        <tr>
+            <th>Hostname</th>
+            <th>IP Address (HEX)</th>
+            <th>Boot Configuration</th>
+            <th>AII Actions</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+
+<div class="modal" id="managedialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <button id="modal-icon" class="btn btn-xs btn-info">
+                    <span class="glyphicon glyphicon-info-sign"></span>
+                </button>
+                <h4 id="modal-title"></h4>
+            </div>
+            <br />
+            <fieldset>
+                <ul class="collapsibleList">
+                    <li id="hardware">Hardware</li>
+                    <li id="software">Software</li>
+                    <li id="system">System</li>
+                </ul>
+            </fieldset>
+
+            <br /><br /><br /><br />
+
+            <div class="modal-footer"></div>
+        </div>
+    </div>
+</div>
+{% endblock %}

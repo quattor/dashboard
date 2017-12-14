@@ -1,0 +1,4 @@
+.idea
+cgi-bin/remote_dashboard*.cgi
+assets/css/theme/*.css
+assets/css/bootstrap/*.css

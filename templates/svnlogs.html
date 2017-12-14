@@ -1,0 +1,41 @@
+{% extends "templates/layout.html" %}
+
+{% block css %}
+<link rel="stylesheet" href="/assets/css/dataTables.bootstrap.css" type="text/css" />
+<link rel="stylesheet" href="/assets/css/bootstrap-select.min.css" type="text/css" />
+{% endblock %}
+
+{% block javascript %}
+<script src="/assets/js/jquery.dataTables.min.js"></script>
+<script src="/assets/js/dataTables.bootstrap.min.js"></script>
+<script src="/assets/js/bootstrap-select.min.js"></script>
+<script src="/assets/js/pages/svnlogs/svnlogs.js"></script>
+{% endblock %}
+
+{% block content %}
+<div id="pagemanage">
+    <h1>SVN Logs</h1>
+
+    <div class="text-center">
+        Load
+        <select id="limit" onchange="loadLogs()" class="selectpicker" data-width="auto" data-size="false">
+            <option value="10" selected>10</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+            <option value="500">500</option>
+            <option value="all">all</option>
+        </select>
+        last revisions.
+    </div>
+    <table id="svnlist" class="table table-striped">
+        <thead>
+        <tr>
+            <th>Revision</th>
+            <th>Date</th>
+            <th>Message</th>
+        </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+{% endblock %}
