@@ -10,7 +10,7 @@ class Root(object):
     def index(request):
         tmpl = env.get_template('templates/index.html')
         return tmpl.render()
-    
+
     @cherrypy.expose
     def hosts(request):
         tmpl = env.get_template('templates/hosts.html')
@@ -35,12 +35,12 @@ class Root(object):
     def stats(request):
         tmpl = env.get_template('templates/stats.html')
         return tmpl.render()
-    
+
     @cherrypy.expose
     def personalities(request):
         tmpl = env.get_template('templates/personalities.html')
         return tmpl.render()
-    
+
     @cherrypy.expose
     def az(request):
         tmpl = env.get_template('templates/az.html')

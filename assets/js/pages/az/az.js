@@ -29,8 +29,8 @@ function createcommandlist()
 
 /*
  * Add a new command to the list. If the beginning of the command matches
- * an entry in the prefix list, set object key as the suffix and store the full 
- * command and related prefix 
+ * an entry in the prefix list, set object key as the suffix and store the full
+ * command and related prefix
  * eg. ..., {'feature' : {'add' : 'add_feature', 'del' : 'del_feature'}}, ...
  */
 function addtocommandlist(command)
