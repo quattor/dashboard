@@ -54,7 +54,7 @@ function showdialog(commandname)
 }
 
 /*
- * Loop over all optgroup nodes and create an input field or recurse due to 
+ * Loop over all optgroup nodes and create an input field or recurse due to
  * nested optgroup nodes.
  *
  * Only shows legend for top level optgroups, otherwise just displays <hr>.
@@ -142,7 +142,7 @@ function parseoptions(option, required)
 
 /*
  * Creates input fields depending on their type and attaches data attributes to
- * keep track of conflicts and validation. 
+ * keep track of conflicts and validation.
  */
 function createinput(option, required)
 {
@@ -263,8 +263,8 @@ function fieldlisteners()
             }
             else
             {
-                // to determine if we need to re-enable any of the input's 
-                // conflicting fields, we have to check that they are not in 
+                // to determine if we need to re-enable any of the input's
+                // conflicting fields, we have to check that they are not in
                 // conflict with any other fields
                 var enable = true;
                 var conflicts = input.data('conflicts').split(' ');
@@ -331,7 +331,7 @@ function submitlistener(commandname)
 /*
  * Each command can have multiple transports (URL & method). So determine which
  * one to use by matching fields that have been submitted to the transport
- * triggers. 
+ * triggers.
  */
 function determinetransport(command)
 {
@@ -361,7 +361,7 @@ function determinetransport(command)
 }
 
 /*
- * Perform substitution on paths that require data from the form 
+ * Perform substitution on paths that require data from the form
  * eg. show_feature: /feature/%(type)s/%(feature)s replace type and feature.
  */
 function generatepath(transport)
